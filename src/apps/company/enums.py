@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class CompanyType(Enum):
+class CompanyType(IntEnum):
     INDIVIDUAL = 1
     LLC = 2

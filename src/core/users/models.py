@@ -7,7 +7,6 @@ from fastapi_users.db import SQLAlchemyBaseUserTable
 
 from src.core.sql.database import Base
 from src.core.mixins import JSONRepresentationMixin
-from src.apps.company.models import Employee
 
 
 class User(JSONRepresentationMixin, SQLAlchemyBaseUserTable[int], Base):
@@ -41,13 +40,7 @@ class User(JSONRepresentationMixin, SQLAlchemyBaseUserTable[int], Base):
     )
     roles: Mapped[list[Role]] = relationship(
         "UserRoleAssociation",
-        back_populates="user",
-        cascade="all, delete-orphan",
-        lazy="joined",
-    )
-    employee: Mapped[Employee] = relationship(
-        "Employee",
-        back_populates="user",
+        backref="user",
         cascade="all, delete-orphan",
         lazy="joined",
     )
@@ -63,7 +56,7 @@ class Role(JSONRepresentationMixin, Base):
     name: Mapped[str] = mapped_column(String(length=64), nullable=False)
     users: Mapped[list[User]] = relationship(
         "UserRoleAssociation",
-        back_populates="role",
+        backref="role",
         cascade="all, delete-orphan",
         lazy="joined",
     )
@@ -88,17 +81,6 @@ class UserRoleAssociation(JSONRepresentationMixin, Base):
     expire_date: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
-    )
-
-    user: Mapped[User] = relationship(
-        "User",
-        back_populates="roles",
-        lazy="joined",
-    )
-    role: Mapped[Role] = relationship(
-        "Role",
-        back_populates="users",
-        lazy="joined",
     )
 
     def __repr__(self) -> str:

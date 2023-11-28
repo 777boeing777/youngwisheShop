@@ -6,9 +6,11 @@ from src.core.sql.database import get_session
 from src.core.users.manager import UserManager
 
 
-async def get_user_db(session: AsyncSession = Depends(get_session)):
+async def get_user_db(
+    session: AsyncSession = Depends(get_session),
+) -> SQLAlchemyUserDatabase:
     yield SQLAlchemyUserDatabase(session, User)
 
 
-async def get_user_manager(user_db=Depends(get_user_db)):
+async def get_user_manager(user_db=Depends(get_user_db)) -> UserManager:
     yield UserManager(user_db)

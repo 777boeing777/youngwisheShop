@@ -2,11 +2,19 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from src.core.sql.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, Integer, DateTime, Float, Boolean, func
+from sqlalchemy import (
+    ForeignKey,
+    String,
+    Integer,
+    DateTime,
+    Float,
+    Boolean,
+    func,
+    SmallInteger,
+)
 from datetime import datetime
-from sqlalchemy_utils import ChoiceType
-from src.apps.company.enums import CompanyType
 from src.core.mixins import JSONRepresentationMixin
+from sqlalchemy.dialects.postgresql import JSONB
 
 if TYPE_CHECKING:
     from src.core.users.models import User
@@ -23,15 +31,15 @@ class Company(JSONRepresentationMixin, Base):
         index=True,
     )
     director_fullname: Mapped[str] = mapped_column("ФИО директора", String(length=64))
-    type: Mapped[int] = mapped_column("Тип компании", ChoiceType(choices=CompanyType))
-    jur_address: Mapped[str] = mapped_column(
+    type: Mapped[int] = mapped_column("Тип компании", SmallInteger)
+    jur_address: Mapped[JSONB] = mapped_column(
         "Юридический адрес",
-        String(length=256),
+        JSONB,
         nullable=True,
     )
-    fact_address: Mapped[str] = mapped_column(
+    fact_address: Mapped[JSONB] = mapped_column(
         "Фактический адрес",
-        String(length=256),
+        JSONB,
         nullable=True,
     )
     created_at: Mapped[datetime] = mapped_column(
@@ -46,12 +54,8 @@ class Company(JSONRepresentationMixin, Base):
     )
     rating: Mapped[float] = mapped_column("Рейтинг", Float, nullable=True, index=True)
     is_hidden: Mapped[bool] = mapped_column("Скрыта в системе", Boolean, default=False)
-
-    users: Mapped[list[User]] = relationship(
-        "Employee",
-        back_populates="company",
-        cascade="all, delete-orphan",
-    )
+    is_verified: Mapped[bool] = mapped_column("Подтверждена", Boolean, default=False)
+    employees: Mapped[list[Employee]] = relationship("Employee", backref="company")
 
     def __repr__(self):
         return self.name
@@ -86,17 +90,11 @@ class Employee(JSONRepresentationMixin, Base):
         String,
         nullable=True,
     )
-
     user: Mapped[User] = relationship(
         "User",
-        back_populates="employee",
+        backref="employee",
         lazy="joined",
         uselist=False,
-    )
-    company: Mapped[Company] = relationship(
-        "Company",
-        back_populates="employees",
-        lazy="joined",
     )
 
     def __repr__(self) -> str:

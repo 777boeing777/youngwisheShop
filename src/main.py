@@ -7,6 +7,8 @@ from src.core.users.auth import (
 )
 from src.core.users.models import User
 from src.core.config import get_settings
+from src.apps.company.routes import company_router
+
 
 description = """
 # Статус - в разработке ⚙️
@@ -44,6 +46,7 @@ app = YshopAPI(
 app.include_router(auth_router, tags=["/auth"], prefix="/auth/jwt")
 app.include_router(register_router, tags=["/auth"], prefix="/auth")
 app.include_router(users_router, tags=["/users"], prefix="/users")
+app.include_router(company_router, tags=["/company"], prefix="/company")
 
 current_user = fastapi_users.current_user()
 
