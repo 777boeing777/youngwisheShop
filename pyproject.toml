@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "yshop"
+version = "0.1.0"
+description = "Diploma"
+authors = ["Danil Fedorov"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.103.2"
+uvicorn = {extras = ["standard"], version = "^0.23.2"}
+pre-commit = "^3.4.0"
+SQLAlchemy = {extras = ["asyncio"], version = "^2.0.23"}
+alembic = "^1.12.1"
+Werkzeug = "^3.0.1"
+asyncpg = "^0.28.0"
+asyncio = "^3.4.3"
+psycopg2-binary = "^2.9.9"
+pydantic-settings = "^2.0.3"
+fastapi-users = {extras = ["sqlalchemy"], version = "^12.1.2"}
+pytest = "^7.4.3"
+httpx = "^0.25.1"
+sqlalchemy-utils = "^0.41.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
